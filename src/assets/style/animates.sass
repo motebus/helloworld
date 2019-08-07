@@ -1,0 +1,35 @@
++keyframes(beat)
+  0%
+    transform: scale(1)
+  30%
+    transform: scale(.8)
+  70%
+    transform: scale(1.2)
+  100%
+    transform: scale(1)
+
+=animate_beat
+  animation: beat .3s linear
+
+
++keyframes(rotate)
+  from
+    transform: rotate(0)
+  to
+    transform: rotate(450deg)
+
++keyframes(line)
+  0%
+    stroke-dasharray: 2, 85.964
+    transform: rotate(0)
+  50%
+    stroke-dasharray: 65.973, 21.9911
+    stroke-dashoffset: 0
+  100%
+    stroke-dasharray: 2, 85.964
+    stroke-dashoffset: -65.973
+    transform: rotate(90deg)
+
+=animate_loader
+  animation: line 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite, rotate 1.6s linear infinite
+  

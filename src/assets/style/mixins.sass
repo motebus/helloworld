@@ -1,0 +1,142 @@
+=xs()
+  @media all and (max-width: $xs-width)
+    @content
+    
+=sm()
+  @media all and (min-width: $xs-width)
+    @content
+
+=md()
+  @media all and (min-width: $sm-width)
+    @content
+
+=lg()
+  @media all and (min-width: $md-width)
+    @content
+
+=xl()
+  @media all and (min-width: $lg-width)
+    @content
+
+
+=keyframes($name)
+  @keyframes #{$name}
+    @content
+
+=htmlDefault()
+  html
+    font-size: $fontsize-base
+  body
+    margin: 0
+  a
+    color: unset
+    cursor: pointer
+    text-decoration: none
+  ul
+    list-style-type: none
+    margin-block-start: 0
+    margin-block-end: 0
+    padding-inline-start: 0
+  button, input, textarea
+    letter-spacing: unset
+    word-spacing: unset
+    &:focus
+      outline: none
+  :focus
+    outline: none
+  ::-moz-focus-inner
+    border: 0
+
+=bnbFont()
+  font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif !important
+
+
+// 排版
+=flex($jc:center, $ai:center, $direction:row)
+  @if $direction
+    display: flex
+    justify-content: $jc
+    align-items: $ai
+    flex-direction: $direction
+  @else
+    display: flex
+    justify-content: $jc
+    align-items: $ai
+    flex-direction: row
+
+=ab_start()
+  left: 0
+  position: absolute
+  top: 0
+
+=ab_center()
+  left: 50%
+  position: absolute
+  top: 50%
+  transform: translateX(-50%) translateY(-50%)
+
+=ab_center_h()
+  position: absolute
+  left: 50%
+  transform: translateX(-50%)
+
+=ab_center_v()
+  position: absolute
+  top: 50%
+  transform: translateY(-50%)
+
+=container_full()
+  height: 100%
+  position: relative
+  width: 100%
+
+=container_ratio($ratio: 100%)
+  position: relative
+  padding-top: $ratio
+  overflow: hidden
+
+// 樣式
+=size($w, $h)
+  height: $h
+  width: $w
+
+
+=pointer()
+  cursor: pointer
+  user-select: none
+  &:focus
+    outline: none
+  &::-moz-focus-inner
+    border: 0
+
+=link()
+  +pointer
+
+=round()
+  border-radius: 50%
+
+
+//
+
+
+=text($color: $text)
+  color: $text
+
+=text_bold($color: $text)
+  +text($color)
+  font-weight: 800
+
+=text_hover($color: $text, $alpha: 1)
+  color: $color
+  opacity: $alpha
+
+=title($color: $text, $size: $xl)
+  color: $text
+  font-size: $size
+  font-weight: 800
+
+=sub($color: $secondary, $size: $s)
+  color: $color
+  font-size: $size
+
+
