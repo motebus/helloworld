@@ -1,6 +1,8 @@
 {
-  "name": "gitpages",
-  "version": "0.1.0",
+  "name": "{{ name }}",
+  "version": "{{ version }}",
+  "description": "{{ description }}",
+  "author": "{{ author }}",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
