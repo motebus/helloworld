@@ -1,26 +1,18 @@
-# Hello world template
+# Page Hello World
 
-## Project setup
-```
-npm install
-```
+> The simplest possible Page setup in a hello world page
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+### Usage
 
-### Compiles and minifies for production
-```
-npm run build
-```
+This is a project template for [vue-cli](https://github.com/vuejs/vue-cli).
 
-### Lints and fixes files
-```
-npm run lint
+``` bash
+$ npm install -g page-cli
+$ page init helloworld my-project
+$ cd my-project
+$ npm install
+$ npm run serve
 ```
 
-### Run your unit tests
-```
-npm run test:unit
-```
+
+
