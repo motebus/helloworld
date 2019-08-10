@@ -18,7 +18,7 @@
     "es-cookie": "^1.2.0",
     "http-vue-loader": "^1.4.0",
     "jquery": "^3.4.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "material-design-icons-iconfont": "^4.0.5",
     "moment": "^2.24.0",
     "obj-urlencode": "^1.0.0",
