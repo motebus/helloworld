@@ -7,7 +7,7 @@
 This is a project template for [Page-cli](https://github.com/motebus/page-cli).
 
 ``` bash
-$ npm install -g page-cli
+$ npm install -g @motebus/page-cli
 $ page init helloworld my-project
 $ cd my-project
 $ npm install
