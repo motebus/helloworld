@@ -13,12 +13,10 @@
 export default {
   name: 'App',
   created () {
-      this.$store.dispatch('fetchUser');
   }
 };
 </script>
 <style lang="sass">
-@import 'reset-css';
 
 body
   overflow-x: hidden

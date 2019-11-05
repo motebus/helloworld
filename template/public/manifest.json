@@ -1,0 +1,9 @@
+{
+  "name": "gitpages",
+  "short_name": "gitpages",
+   "start_url": "/",
+   "Scope": "/",
+   "display": "fullscreen",
+   "background_color": "#ffffff",
+   "theme_color": "#4DBA87"
+ }

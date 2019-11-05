@@ -1,4 +1,12 @@
 module.exports = {
+  pluginOptions: {
+    enableInSFC: false
+  },
+  configureWebpack: {
+    performance: {
+      hints: false
+    }
+  },
   css: {
     loaderOptions: {
       sass: {
