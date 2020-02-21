@@ -1,181 +1,171 @@
 <template >
-      <v-layout justify-cente align-center column>
-          <v-avatar size="255" tile="tile"><img :src="icon" /></v-avatar>
-          <div class="hello__title text-xs-center mb-3">
-              <p>Hello</p>
-              <p>Gitpage</p>
-          </div>
-          <div class="hello__hint">try to type some params by url!</div>
-          <v-data-table class="hello__paramList my-3 elevation-1" :headers="headers" :items="tableParams" hide-default-footer><template v-slot:items="props"><td class="text-xs-center">{{ props.item.parameter }}</td><td class="text-xs-center">{{ props.item.value }}</td></template></v-data-table>
-      </v-layout>
+  <v-layout justify-cente align-center column class="mt-12">
+    <img :src="icon" width="255px" class="mt-12" />
+
+    <div class="hello__title text-xs-center mb-3">
+      <p>Hello</p>
+      <p>Gitpage</p>
+    </div>
+    <div class="hello__hint">Les start your page!</div>
+    <HelloWorld />
+  </v-layout>
 </template>
 
 <script>
 import icon from "@/assets/gitpage_icon.png";
-import { set as setCookie, get as getCookie, remove as removeCookie } from "es-cookie";
+import HelloWorld from "../components/HelloWorld";
+import {
+  set as setCookie,
+  get as getCookie,
+  remove as removeCookie
+} from "es-cookie";
 import webmms from "webmms-client";
-import conf from '@/config/config';
+import conf from "@/config/config";
 
 export default {
   name: "hello",
   data() {
     return {
       icon,
-      headers: [
-        { text: "parameter", value: "parameter" },
-        { text: "value", value: "value" }
-      ],
+
       params: null,
       error: true,
       errorLoading: false,
-      errorMsg: '',
+      errorMsg: "",
       mmsReady: false,
       mms: null,
       eiInfo: {
-          eiName: '',
-          eiTag: '',
-          ddn : ''
+        eiName: "",
+        eiTag: "",
+        ddn: ""
       },
-      webmmsOptions : {
-          EiToken: '',
-          SToken: '',
-          UToken: ''
-      },
+      webmmsOptions: {
+        EiToken: "",
+        SToken: "",
+        UToken: ""
+      }
     };
   },
-  computed: {
-    tableParams() {
-      const arr = [];
-      const p = this.params;
-
-      if (p) {
-        Object.keys(p).forEach(k => {
-          arr.push({
-            parameter: k,
-            value: p[k]
-          });
-        });
-      }
-
-      return arr;
-    }
-  },
+  computed: {},
   async created() {
     this.params = this.$router.query;
     this.startMMS();
   },
   async beforeMount() {
-      await this.subscribeMMS();
+    await this.subscribeMMS();
   },
   beforeDestroy() {
     this.removeEvent();
   },
   methods: {
-    checkWebMMSState(){
-        if(!this.mmsReady)
-        {
-          this.errorMsg = "WebMMS is not connected or registered.";
-          this.errorLoading = true;
-          return false;
-        }else return  true;
-
-      },
-    startMMS(){
-          this.mms =  webmms({
-            wsurl: conf.wsurl,
-            EiToken: getCookie("jj-EiToken") || "",
-            SToken: getCookie("jj-SToken") || ""
-          });
-
+    checkWebMMSState() {
+      if (!this.mmsReady) {
+        this.errorMsg = "WebMMS is not connected or registered.";
+        this.errorLoading = true;
+        return false;
+      } else return true;
+    },
+    startMMS() {
+      this.mms = webmms({
+        wsurl: conf.wsurl,
+        EiToken: getCookie("jj-EiToken") || "",
+        SToken: getCookie("jj-SToken") || ""
+      });
     },
     async subscribeMMS() {
-        this.removeEvent = this.mms.on("registered", async reply => {
-            //console.log('reply=%s', JSON.stringify(reply))
-             if(reply.ErrMsg == "OK"){
-                this.eiInfo.ddn = reply.result.DDN;
-                this.webmmsOptions.EiToken = reply.result.EiToken;
-                this.webmmsOptions.SToken = reply.result.SToken;
-                this.webmmsOptions.UToken = reply.result.UToken;
-                if(this.eiInfo.eiName == ''){
-                  this.eiInfo.eiName = reply.result.EiName ? reply.result.EiName : 'jb' + this.makeId(5);
-                }
-                 if(this.eiInfo.eiTag == ''){
-                  this.eiInfo.eiTag = reply.result.EiTag ? reply.result.EiTag : '';
-                }
-                this.mmsReady = true;
-                this.error = false;
-             }else{
-                this.mmsReady = false;
-                this.error = false;
-             }
+      this.removeEvent = this.mms.on("registered", async reply => {
+        //console.log('reply=%s', JSON.stringify(reply))
+        if (reply.ErrMsg == "OK") {
+          this.eiInfo.ddn = reply.result.DDN;
+          this.webmmsOptions.EiToken = reply.result.EiToken;
+          this.webmmsOptions.SToken = reply.result.SToken;
+          this.webmmsOptions.UToken = reply.result.UToken;
+          if (this.eiInfo.eiName == "") {
+            this.eiInfo.eiName = reply.result.EiName
+              ? reply.result.EiName
+              : "jb" + this.makeId(5);
+          }
+          if (this.eiInfo.eiTag == "") {
+            this.eiInfo.eiTag = reply.result.EiTag ? reply.result.EiTag : "";
+          }
+          this.mmsReady = true;
+          this.error = false;
+        } else {
+          this.mmsReady = false;
+          this.error = false;
+        }
 
-             let expiredTime = 60 * 60 * 24 * 30 * 12;
+        setCookie("jj-EiToken", this.webmmsOptions.EiToken);
+        setCookie("jj-SToken", this.webmmsOptions.SToken);
 
-             setCookie("jj-EiToken", this.webmmsOptions.EiToken);
-             setCookie("jj-SToken", this.webmmsOptions.SToken);
+        console.log("regtoCenter: %s", reply.ErrMsg);
 
+        let deviceInfo = {
+          DDN: this.eiInfo.ddn,
+          EiOwner: "",
+          EiName: this.eiInfo.eiName,
+          EiType: ".page",
+          EiTag: this.eiInfo.eiTag,
+          EiLoc: ""
+        };
+        let result = await this.mms.setDeviceInfo(deviceInfo);
 
-             console.log('regtoCenter: %s', reply.ErrMsg);
+        console.log("SetDevice reply=%s", JSON.stringify(result));
+      });
 
-            let deviceInfo = {"DDN":this.eiInfo.ddn,"EiOwner":"","EiName":this.eiInfo.eiName,"EiType":".page","EiTag":this.eiInfo.eiTag,"EiLoc":""};
-            let result = await this.mms.setDeviceInfo(deviceInfo);
+      this.mms.on("message", (method, from, data, body) => {
+        this.mmsReady = true;
+        this.error = false;
+        console.log("rcve: from=%s, data=%s", from, JSON.stringify(data));
+        if (typeof data == "object" && !data.from) data.from = from;
+        //body.sender = data;
+        if (data) {
+          //this.eventList.push(data.data);
+          //this.setLog({From : from, Data: data}, 'In');
+        }
+      });
 
-            console.log('SetDevice reply=%s', JSON.stringify(result));
-        });
+      this.mms.on("state", msg => {
+        console.log("WS error: %s", msg);
+        this.mmsReady = false;
+        this.error = true;
+        this.loading = false;
+      });
 
-        this.mms.on('message', (method, from, data, body) => {
-             this.mmsReady = true;
-             this.error = false;
-             console.log('rcve: from=%s, data=%s', from, JSON.stringify(data));
-            if(typeof data == 'object' && !data.from)
-              data.from = from;
-            //body.sender = data;
-            if(data)
-            {
+      this.mms.on("disconnect", msg => {
+        this.mmsReady = false;
+        this.error = true;
+        this.loading = false;
+      });
 
-              //this.eventList.push(data.data);
-              //this.setLog({From : from, Data: data}, 'In');
+      this.mms.on("error", err => {
+        this.mmsReady = false;
+        this.error = true;
+        this.loading = false;
+      });
 
-            }
-        });
+      this.mms.on("connect_error", err => {
+        this.mmsReady = false;
+        this.error = true;
+        this.loading = false;
+      });
 
-        this.mms.on('state', msg => {
-            console.log('WS error: %s', msg);
-            this.mmsReady = false;
-            this.error = true;
-            this.loading = false;
-        });
-
-        this.mms.on('disconnect', msg => {
-            this.mmsReady = false;
-            this.error = true;
-            this.loading = false;
-        });
-
-        this.mms.on('error', err => {
-            this.mmsReady = false;
-            this.error = true;
-            this.loading = false;
-        });
-
-        this.mms.on('connect_error', err => {
-            this.mmsReady = false;
-            this.error = true;
-            this.loading = false;
-        });
-
-        this.mms.on('connect_timeout', err => {
-            this.mmsReady = false;
-            this.error = true;
-            this.loading = false;
-        });
-      },
+      this.mms.on("connect_timeout", err => {
+        this.mmsReady = false;
+        this.error = true;
+        this.loading = false;
+      });
+    }
+  },
+  components: {
+    HelloWorld
   }
 };
 </script>
 
 <style lang="sass">
 .hello
+
   &__title
     font-size: 3rem
     font-weight: 900
